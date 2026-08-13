@@ -21,20 +21,20 @@ pipeline {
       }
     }
    
-  stage('SonarQube Analysis') {
+ stage('SonarQube Analysis') {
   steps {
     withSonarQubeEnv('sonarqube') {
       sh '''
         apk add --no-cache openjdk17-jre
-        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        export PATH=$JAVA_HOME/bin:$PATH
         cd node-app
+
         npx @sonar/scan \
           -Dsonar.projectKey=node-express-app \
           -Dsonar.projectName="Node Express App" \
           -Dsonar.sources=. \
           -Dsonar.exclusions=node_modules/**,coverage/** \
-          -Dsonar.host.url=$SONAR_HOST_URL
+          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.scanner.skipJreProvisioning=true
       '''
     }
   }
