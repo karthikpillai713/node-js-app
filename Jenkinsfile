@@ -1,10 +1,10 @@
 pipeline {
   agent {
-    docker {
-      image 'node:20-alpine'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-    }
+  docker {
+    image 'node:20-alpine'
+    args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
   }
+}
   stages {
     stage('Checkout') {
       steps {
