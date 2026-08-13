@@ -1,10 +1,10 @@
 pipeline {
   agent {
     docker {
-      image 'node:20-alpine'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+        image 'node:20-bookworm'
+        args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
-  }
+}
 
   stages {
     stage('Checkout') {
@@ -24,22 +24,29 @@ pipeline {
     }
 
     stage('SonarQube Analysis') {
-      steps {
+    steps {
         withSonarQubeEnv('sonarqube') {
-          sh '''
-            apk add --no-cache openjdk17-jre
-            cd node-app
+            sh '''
+                apt-get update
+                apt-get install -y openjdk-17-jre
 
-            npx -p sonar-scanner-cli sonar-scanner \
-              -Dsonar.projectKey=node-express-app \
-              -Dsonar.projectName="Node Express App" \
-              -Dsonar.sources=. \
-              -Dsonar.exclusions=node_modules/**,coverage/** \
-              -Dsonar.host.url=$SONAR_HOST_URL
-          '''
+                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                export PATH=$JAVA_HOME/bin:$PATH
+
+                cd node-app
+
+                java -version
+
+                npx @sonar/scan \
+                  -Dsonar.projectKey=node-express-app \
+                  -Dsonar.projectName="Node Express App" \
+                  -Dsonar.sources=. \
+                  -Dsonar.exclusions=node_modules/**,coverage/** \
+                  -Dsonar.host.url=$SONAR_HOST_URL
+            '''
         }
-      }
     }
+}
 
     stage('Build and Push Docker Image') {
       environment {
