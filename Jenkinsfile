@@ -28,18 +28,16 @@ pipeline {
         apk add --no-cache openjdk17-jre
         cd node-app
 
-        npx @sonar/scan \
+        npx -p sonar-scanner-cli sonar-scanner \
           -Dsonar.projectKey=node-express-app \
           -Dsonar.projectName="Node Express App" \
           -Dsonar.sources=. \
           -Dsonar.exclusions=node_modules/**,coverage/** \
-          -Dsonar.host.url=$SONAR_HOST_URL \
-          -Dsonar.scanner.skipJreProvisioning=true
+          -Dsonar.host.url=$SONAR_HOST_URL
       '''
     }
   }
-}
-    stage('Build and Push Docker Image') {
+}    stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "karthik713/ultimate-cicd:${BUILD_NUMBER}"
       }
