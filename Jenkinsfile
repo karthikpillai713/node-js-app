@@ -122,7 +122,9 @@ pipeline {
 
                     sh '''
                         echo "Cloning GitHub repository..."
-
+                        
+                        apk add --no-cache git
+                        
                         rm -rf repo-temp
 
                         git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git repo-temp
