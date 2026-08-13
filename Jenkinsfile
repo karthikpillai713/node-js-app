@@ -47,27 +47,29 @@ pipeline {
 stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('sonarqube') {
-            sh '''
-                echo "Installing Docker CLI..."
-                apk add --no-cache docker-cli
+            withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                sh '''
+                    echo "Installing Docker CLI..."
+                    apk add --no-cache docker-cli
 
-                cd node-app
+                    cd node-app
 
-                echo "Running SonarQube analysis..."
+                    echo "Running SonarQube analysis..."
 
-                docker run --rm \
-                    -v "$PWD:/usr/src" \
-                    -w /usr/src \
-                    -e SONAR_HOST_URL=$SONAR_HOST_URL \
-                    -e SONAR_TOKEN=$SONAR_TOKEN \
-                    sonarsource/sonar-scanner-cli:latest \
-                    -Dsonar.projectKey=node-express-app \
-                    -Dsonar.projectName="Node Express App" \
-                    -Dsonar.sources=. \
-                    -Dsonar.exclusions=node_modules/**,coverage/** \
-                    -Dsonar.host.url=$SONAR_HOST_URL \
-                    -Dsonar.token=$SONAR_TOKEN
-            '''
+                    docker run --rm \
+                        -v "$PWD:/usr/src" \
+                        -w /usr/src \
+                        -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+                        -e SONAR_TOKEN="$SONAR_TOKEN" \
+                        sonarsource/sonar-scanner-cli:latest \
+                        -Dsonar.projectKey=node-express-app \
+                        -Dsonar.projectName="Node Express App" \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=node_modules/**,coverage/** \
+                        -Dsonar.host.url="$SONAR_HOST_URL" \
+                        -Dsonar.token="$SONAR_TOKEN"
+                '''
+            }
         }
     }
 }
