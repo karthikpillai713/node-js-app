@@ -73,7 +73,7 @@ pipeline {
         stage('Build and Push Docker Image') {
 
             environment {
-                DOCKER_IMAGE = "ayanshaji/ultimate-cicd:${BUILD_NUMBER}"
+                DOCKER_IMAGE = "karthik713/ultimate-cicd:${BUILD_NUMBER}"
             }
 
             steps {
@@ -102,14 +102,14 @@ pipeline {
 
             environment {
                 GIT_REPO_NAME = 'node-js'
-                GIT_USER_NAME = 'ayanshaji'
+                GIT_USER_NAME = 'karthikpillai713'
             }
 
             steps {
 
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'git-hub',
+                        credentialsId: 'github2',
                         usernameVariable: 'GITHUB_USERNAME',
                         passwordVariable: 'GITHUB_TOKEN'
                     )
@@ -126,12 +126,12 @@ pipeline {
 
                         echo "Configuring Git..."
 
-                        git config user.email "gopikakt2005@gmail.com"
+                        git config user.email "karthikpillai713gmail.com"
                         git config user.name "${GIT_USER_NAME}"
 
                         echo "Updating Kubernetes deployment image..."
 
-                        sed -i "s|image: .*|image: ayanshaji/ultimate-cicd:${BUILD_NUMBER}|g" node-app-manifests/deployment.yml
+                        sed -i "s|image: .*|image: karthik713/ultimate-cicd:${BUILD_NUMBER}|g" node-app-manifests/deployment.yml
 
                         echo "Checking changes..."
 
