@@ -83,4 +83,9 @@ pipeline {
       }
     }
   }
+    post {
+    always {
+      sh 'rm -rf node-app/node_modules'
+    }
+  }
 }
